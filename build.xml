@@ -1,0 +1,49 @@
+<project name="chatbot" default="compile" basedir=".">
+	<property name="main.class" value="com.dragonsblaze.chatbot.Bot" />
+	<property name="source.directory" value="src" />
+	<property name="build.directory" value="bin" />
+	<property name="dist.directory" value="dist" />
+	<property name="jar.file" value="chatbot.jar" />
+
+	<path id="build.classpath">
+		<fileset dir="lib" includes="*.jar" />
+	</path>
+
+	<fileset dir="lib" id="libjars">
+		<include name="*.jar" />
+	</fileset>
+
+	<manifestclasspath property="manifest.classpath" jarfile="${jar.file}">
+		<classpath refid="build.classpath" />
+	</manifestclasspath>
+
+	<target name="compile">
+		<mkdir dir="${build.directory}" />
+		<javac srcdir="${source.directory}" destdir="${build.directory}" classpathref="build.classpath" />
+	</target>
+
+	<target name="run" depends="compile">
+		<java classname="${main.class}" classpathref="build.classpath" classpath="${build.directory}" fork="true" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist.directory}" />
+		<jar jarfile="${dist.directory}/${jar.file}" basedir="${build.directory}" update="true">
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="bin" />
+			<zipgroupfileset refid="libjars" />
+		</jar>
+	</target>
+
+	<target name="runjar" depends="jar">
+		<java jar="${dist.directory}/${jar.file}" fork="true" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.directory}" />
+		<delete dir="${dist.directory}" />
+	</target>
+</project>

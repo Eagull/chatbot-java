@@ -2,7 +2,21 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="lib/smack-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/smackx-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/smack-3.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/usr/local/lib/smack_3_1_0/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/smackx-3.1.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/usr/local/lib/smack_3_1_0/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/json.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-configuration-1.6.jar" sourcepath="/usr/local/lib/commons-configuration-1.6/commons-configuration-1.6-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

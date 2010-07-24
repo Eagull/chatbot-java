@@ -6,16 +6,15 @@ import com.dragonsblaze.chatbot.adapter.Adapter;
 
 public class DateCommand extends Command
 {
-	public DateCommand(Adapter adapter)
-	{
-		super(adapter);
-	}
-
 	@Override
-	public void process(String sender, String args)
+	public void process(String sender, String args, Adapter adapter)
 	{
-		String text = new Date().toString();
-		adapter.send(sender + ": " + text);
-		System.out.println("* Sent:\t" + text);
+		adapter.send(sender + ": " + new Date().toString());
+	}
+	
+	@Override
+	public String getHelpText()
+	{
+		return "print the current date and time";
 	}
 }

@@ -4,12 +4,15 @@ import com.dragonsblaze.chatbot.adapter.Adapter;
 
 public abstract class Command
 {
-	protected Adapter adapter;
-
-	public Command(Adapter adapter)
+	public abstract void process(String sender, String args, Adapter adapter);
+	
+	public void process(String sender, String command, String args, Adapter adapter)
 	{
-		this.adapter = adapter;
+		process(sender, args, adapter);
 	}
 	
-	public abstract void process(String sender, String args);
+	public String getHelpText()
+	{
+		return null;
+	}
 }

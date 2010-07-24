@@ -1,30 +1,54 @@
 package com.dragonsblaze.chatbot;
 
+/**
+ * @author aaditya
+ */
+import java.io.IOException;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 import com.dragonsblaze.chatbot.adapter.Adapter;
 import com.dragonsblaze.chatbot.adapter.XMPPMUCAdapter;
+import com.dragonsblaze.chatbot.handler.XMPPCommandHandler;
 import com.dragonsblaze.chatbot.plugin.DateCommand;
+import com.dragonsblaze.chatbot.plugin.DevoiceCommand;
+import com.dragonsblaze.chatbot.plugin.DiceCommand;
+import com.dragonsblaze.chatbot.plugin.DictCommand;
+import com.dragonsblaze.chatbot.plugin.ExpandCommand;
+import com.dragonsblaze.chatbot.plugin.GoogleCommand;
+import com.dragonsblaze.chatbot.plugin.HelpCommand;
+import com.dragonsblaze.chatbot.plugin.JidCommand;
 import com.dragonsblaze.chatbot.plugin.KickCommand;
+import com.dragonsblaze.chatbot.plugin.ModeCommand;
+import com.dragonsblaze.chatbot.plugin.QuoteCommand;
 import com.dragonsblaze.chatbot.plugin.SayCommand;
+import com.dragonsblaze.chatbot.plugin.VoiceCommand;
+import com.dragonsblaze.chatbot.plugin.XkcdCommand;
 
 public class Bot
 {
-	private static final String SERVER = "example.org";
+	private static String nickname;
 
-	private static final int PORT = 5222;
+	private static Adapter adapter;
 	
-	private static final String ROOM = "firemoth@chat.speeqe.com";
+	public static Dictionary dictionary;
 
-	private static final String USERNAME = "";
-
-	private static final String PASSWD = "";
-
-	public static final String NICKNAME = "nickname";
-
-	static Adapter adapter;
+	public enum Authorization
+	{
+		NONE, VISITOR, PARTICIPANT, MEMBER, MODERATOR, ADMIN, OWNER;
+	};
 
 	public static void main(String[] args)
 	{
-		new Bot();
+		if(args.length < 2)
+		{
+			System.err.println("Required: config dictionary");
+			System.exit(1);
+		}
+		
+		new Bot(args[0], args[1]);
 
 		try
 		{
@@ -37,19 +61,63 @@ public class Bot
 		}
 	}
 
-	public Bot()
+	public Bot(String configFilename, String dictionaryFilename)
 	{
-		adapter = new XMPPMUCAdapter(ROOM, NICKNAME);
-		adapter.connect(SERVER, USERNAME, PASSWD, PORT);
+		Configuration config = null;
+		try
+		{
+			config = new PropertiesConfiguration(configFilename);
+			dictionary = new Dictionary(dictionaryFilename);
+		}
+		catch (ConfigurationException e)
+		{
+			String[] messages = e.getMessages();
+			for (String message : messages)
+			{
+				System.err.println(message);
+			}
+			System.exit(2);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		String server = config.getString("server");
+		int port = config.getInt("port");
+		String username = config.getString("username");
+		String password = config.getString("password");
+		String room = config.getString("room");
+		nickname = config.getString("nickname");
+		adapter = new XMPPMUCAdapter(room, nickname);
+
+		adapter.connect(server, username, password, port);
 		adapter.join();
 
-		XMPPCommandHandler commandHandler = new XMPPCommandHandler();
-		adapter.addMessageListener(ROOM, commandHandler);
+		XMPPCommandHandler commandHandler = new XMPPCommandHandler(adapter);
+		adapter.addMessageListener(commandHandler);
+
+		commandHandler.setNotFoundPlugin(new DictCommand());
+		commandHandler.addPlugin("help", new HelpCommand(commandHandler), Authorization.NONE);
 		
-		commandHandler.addPlugin("date", new DateCommand(adapter));
-		commandHandler.addPlugin("kick", new KickCommand(adapter));
-		commandHandler.addPlugin("say", new SayCommand(adapter));
-		
+		commandHandler.addPlugin("mode", new ModeCommand(), Authorization.ADMIN);
+
+		commandHandler.addPlugin("jid", new JidCommand(), Authorization.MODERATOR);
+
+		commandHandler.addPlugin("kick", new KickCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("voice", new VoiceCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("devoice", new DevoiceCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("g", new GoogleCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("dict", new DictCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("whatis", new DictCommand(), Authorization.MEMBER);
+
+		commandHandler.addPlugin("say", new SayCommand(), Authorization.VISITOR);
+		commandHandler.addPlugin("dice", new DiceCommand(), Authorization.NONE);
+		commandHandler.addPlugin("quote", new QuoteCommand(), Authorization.NONE);
+		commandHandler.addPlugin("expand", new ExpandCommand(), Authorization.NONE);
+		commandHandler.addPlugin("date", new DateCommand(), Authorization.NONE);
+		commandHandler.addPlugin("xkcd", new XkcdCommand(), Authorization.VISITOR);
+
 		Runtime.getRuntime().addShutdownHook(new Thread()
 		{
 			@Override
@@ -58,5 +126,10 @@ public class Bot
 				adapter.disconnect();
 			}
 		});
+	}
+
+	public static String getNickname()
+	{
+		return nickname;
 	}
 }

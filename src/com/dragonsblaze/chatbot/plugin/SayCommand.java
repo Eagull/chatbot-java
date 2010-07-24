@@ -4,13 +4,8 @@ import com.dragonsblaze.chatbot.adapter.Adapter;
 
 public class SayCommand extends Command
 {
-	public SayCommand(Adapter adapter)
-	{
-		super(adapter);
-	}
-
 	@Override
-	public void process(String sender, String args)
+	public void process(String sender, String args, Adapter adapter)
 	{
 		adapter.send(args);
 	}

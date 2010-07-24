@@ -1,0 +1,6 @@
+server = speeqe.com
+port = 5222
+username = user
+password = random1234
+room = test@chat.speeqe.com
+nickname = nick
