@@ -18,6 +18,11 @@ public class ExpandCommand extends Command
 	@Override
 	public void process(String sender, String args, Adapter adapter)
 	{
+		if(args.trim().isEmpty())
+		{
+			adapter.send(sender + ": " + getHelpText());
+			return;
+		}
 		try
 		{
 			URL url = new URL(URL_PREFIX + URLEncoder.encode(args, "UTF-8"));
@@ -37,5 +42,11 @@ public class ExpandCommand extends Command
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public String getHelpText()
+	{
+		return "Expands a short URL. Syntax: expand http://example.com/short";
 	}
 }

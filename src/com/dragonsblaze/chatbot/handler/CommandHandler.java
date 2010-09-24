@@ -36,7 +36,7 @@ public class CommandHandler
 	{
 		if(notFound == null)
 		{
-			adapter.send("Wait, what?");
+//			adapter.send("Wait, what?");
 			System.err.println("Not Found: " + commandName);
 			return;
 		}

@@ -13,15 +13,18 @@ import com.dragonsblaze.chatbot.adapter.Adapter;
 import com.dragonsblaze.chatbot.adapter.XMPPMUCAdapter;
 import com.dragonsblaze.chatbot.handler.XMPPCommandHandler;
 import com.dragonsblaze.chatbot.plugin.DateCommand;
+import com.dragonsblaze.chatbot.plugin.DefineCommand;
 import com.dragonsblaze.chatbot.plugin.DevoiceCommand;
 import com.dragonsblaze.chatbot.plugin.DiceCommand;
 import com.dragonsblaze.chatbot.plugin.DictCommand;
 import com.dragonsblaze.chatbot.plugin.ExpandCommand;
+import com.dragonsblaze.chatbot.plugin.ForgetCommand;
 import com.dragonsblaze.chatbot.plugin.GoogleCommand;
 import com.dragonsblaze.chatbot.plugin.HelpCommand;
 import com.dragonsblaze.chatbot.plugin.JidCommand;
 import com.dragonsblaze.chatbot.plugin.KickCommand;
 import com.dragonsblaze.chatbot.plugin.ModeCommand;
+import com.dragonsblaze.chatbot.plugin.OmegleCommand;
 import com.dragonsblaze.chatbot.plugin.QuoteCommand;
 import com.dragonsblaze.chatbot.plugin.SayCommand;
 import com.dragonsblaze.chatbot.plugin.VoiceCommand;
@@ -97,7 +100,7 @@ public class Bot
 		XMPPCommandHandler commandHandler = new XMPPCommandHandler(adapter);
 		adapter.addMessageListener(commandHandler);
 
-		commandHandler.setNotFoundPlugin(new DictCommand());
+//		commandHandler.setNotFoundPlugin(new DictCommand());
 		commandHandler.addPlugin("help", new HelpCommand(commandHandler), Authorization.NONE);
 		
 		commandHandler.addPlugin("mode", new ModeCommand(), Authorization.ADMIN);
@@ -107,16 +110,19 @@ public class Bot
 		commandHandler.addPlugin("kick", new KickCommand(), Authorization.MEMBER);
 		commandHandler.addPlugin("voice", new VoiceCommand(), Authorization.MEMBER);
 		commandHandler.addPlugin("devoice", new DevoiceCommand(), Authorization.MEMBER);
-		commandHandler.addPlugin("g", new GoogleCommand(), Authorization.MEMBER);
-		commandHandler.addPlugin("dict", new DictCommand(), Authorization.MEMBER);
-		commandHandler.addPlugin("whatis", new DictCommand(), Authorization.MEMBER);
-
+		commandHandler.addPlugin("google", new GoogleCommand(), Authorization.MEMBER);
+		commandHandler.addPlugin("define", new DefineCommand("define"), Authorization.MEMBER);
+		commandHandler.addPlugin("forget", new ForgetCommand(), Authorization.ADMIN);
+		commandHandler.addPlugin("dict", new DictCommand(), Authorization.ADMIN);
+		commandHandler.addPlugin("omegle", new OmegleCommand(), Authorization.MEMBER);
+		
 		commandHandler.addPlugin("say", new SayCommand(), Authorization.VISITOR);
+		commandHandler.addPlugin("xkcd", new XkcdCommand(), Authorization.VISITOR);
+		
 		commandHandler.addPlugin("dice", new DiceCommand(), Authorization.NONE);
 		commandHandler.addPlugin("quote", new QuoteCommand(), Authorization.NONE);
 		commandHandler.addPlugin("expand", new ExpandCommand(), Authorization.NONE);
 		commandHandler.addPlugin("date", new DateCommand(), Authorization.NONE);
-		commandHandler.addPlugin("xkcd", new XkcdCommand(), Authorization.VISITOR);
 
 		Runtime.getRuntime().addShutdownHook(new Thread()
 		{

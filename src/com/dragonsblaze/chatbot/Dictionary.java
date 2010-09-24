@@ -5,6 +5,8 @@ package com.dragonsblaze.chatbot;
  */
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -61,10 +63,11 @@ public class Dictionary
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public int getSize()
 	{
-		// TODO: implement this
-		return -1;
+		return new ArrayList<Object>((Collection<Object>) dictionary.getKeys()).size();
+//		return -1;
 	}
 
 	public void remove(String key) throws IOException, ConfigurationException

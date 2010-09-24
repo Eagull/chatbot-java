@@ -55,8 +55,15 @@ public class XMPPCommandHandler extends CommandHandler implements PacketListener
 		String commandName = messageText.substring(commandStartIndex, commandEndIndex);
 
 		if (!commands.containsKey(commandName.toLowerCase()))
-			notFound(StringUtils.parseResource(message.getFrom()), "", commandName + " "+ messageText
+		{
+			if (Bot.dictionary.has(commandName))
+			{
+				adapter.send(Bot.dictionary.get(commandName).getValue());
+				return;
+			}
+			notFound(StringUtils.parseResource(message.getFrom()), commandName, messageText
 					.substring(commandEndIndex).trim());
+		}
 
 		else if (commandAuth.get(commandName.toLowerCase()).compareTo(
 				adapter.getAuthLevel(message.getFrom())) > 0)
@@ -68,7 +75,8 @@ public class XMPPCommandHandler extends CommandHandler implements PacketListener
 			System.err.println("\tRequired: " + commandAuth.get(commandName).name());
 		}
 		else
-			commands.get(commandName.toLowerCase()).process(StringUtils.parseResource(message.getFrom()),
-					commandName, messageText.substring(commandEndIndex).trim(), adapter);
+			commands.get(commandName.toLowerCase()).process(
+					StringUtils.parseResource(message.getFrom()), commandName,
+					messageText.substring(commandEndIndex).trim(), adapter);
 	}
 }

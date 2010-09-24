@@ -15,7 +15,7 @@ public class XMPPMUCAdapter extends Adapter
 {
 	private static XMPPConnection connection;
 
-	private static final String RESOURCE = "bot";
+	private static String resource = null;
 
 	private MultiUserChat chat;
 
@@ -24,6 +24,8 @@ public class XMPPMUCAdapter extends Adapter
 	public XMPPMUCAdapter(String room, String nickname)
 	{
 		super(room, nickname);
+		if (resource == null)
+			resource = "bot" + room.hashCode();
 	}
 
 	@Override
@@ -89,7 +91,7 @@ public class XMPPMUCAdapter extends Adapter
 			connection.connect();
 			System.out.println("Connected");
 
-			connection.login(username, password, RESOURCE);
+			connection.login(username, password, resource);
 			System.out.println("Logged in");
 		}
 		catch (XMPPException e)
