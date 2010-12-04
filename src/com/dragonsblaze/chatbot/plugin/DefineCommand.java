@@ -40,7 +40,7 @@ public class DefineCommand extends Command
 			return;
 		}
 
-		add(argsArr[0], args, sender, adapter);
+		add(argsArr[0].replace(':', ' ').trim(), args, sender, adapter);
 	}
 
 	private void add(String key, String value, String addedBy, Adapter adapter)
@@ -48,7 +48,7 @@ public class DefineCommand extends Command
 		try
 		{
 			Bot.dictionary.add(key, value, addedBy);
-			adapter.send(key + " => " + value);
+			adapter.send(key.toLowerCase() + " => " + value);
 		}
 		catch (IOException e)
 		{

@@ -5,9 +5,8 @@ package com.dragonsblaze.chatbot;
  */
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -34,17 +33,19 @@ public class Dictionary
 			ConfigurationException
 	{
 		DictionaryItem item = new DictionaryItem(value, addedBy, new Date().getTime());
-		dictionary.addProperty(key, new JSONObject(item).toString().replaceAll(",", ";"));
+		dictionary.addProperty(key.trim().toLowerCase(), new JSONObject(item).toString().replaceAll(",", ";"));
 		dictionary.save();
 	}
 
 	public boolean has(String key)
 	{
-		return dictionary.containsKey(key);
+		return dictionary.containsKey(key.toLowerCase());
 	}
 
 	public DictionaryItem get(String key)
 	{
+		key = key.trim().toLowerCase();
+		
 		String jsonText = dictionary.getString(key);
 
 		if (jsonText == null)
@@ -63,16 +64,22 @@ public class Dictionary
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public int getSize()
 	{
-		return new ArrayList<Object>((Collection<Object>) dictionary.getKeys()).size();
-//		return -1;
+		Iterator<?> iterator = dictionary.getKeys();
+		int i = 0;
+		while(iterator.hasNext())
+		{
+			iterator.next();
+			i++;
+		}
+		
+		return i;
 	}
 
 	public void remove(String key) throws IOException, ConfigurationException
 	{
-		dictionary.clearProperty(key);
+		dictionary.clearProperty(key.toLowerCase());
 		dictionary.save();
 	}
 

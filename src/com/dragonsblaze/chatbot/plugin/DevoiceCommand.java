@@ -12,25 +12,30 @@ public class DevoiceCommand extends Command
 		if(target.isEmpty())
 			return;
 		
+		System.out.println("Devoice:\t" + sender + " -> " + target);
+		
 		// if target is admin or above
 		if(adapter.getAuthLevel(target).compareTo(Authorization.ADMIN) >= 0)
+		{
 			adapter.send(sender + ": Are you nuts??");
+			return;
+		}
 		
 		// if target is self
-		else if (sender.equals(target))
+		if (sender.equals(target))
 		{
 			adapter.send(target + ": you're so dumb!");
 			adapter.revokeVoice(target);
+			return;
 		}
 
 		// if target is superior or equal
-		else if(adapter.isSuperior(target, sender, false))
+		if(adapter.isSuperior(target, sender, false))
+		{
 			adapter.send("/me kicks " + sender + "!!");
+			return;
+		}
 		
-		else
-			adapter.revokeVoice(target);
-		
-		System.out.println("Voice:\t" + sender + " -> " + target);
 		adapter.revokeVoice(target);
 	}
 }

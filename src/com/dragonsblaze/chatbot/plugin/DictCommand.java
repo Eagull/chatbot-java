@@ -11,8 +11,6 @@ import com.dragonsblaze.chatbot.adapter.Adapter;
 
 public class DictCommand extends Command
 {
-	private static final String REPLY_TAG = "=>";
-
 	private static final String FORGET = "forget", INFO = "info", SIZE = "size";
 
 	@Override
@@ -26,28 +24,17 @@ public class DictCommand extends Command
 			return;
 		}
 
-		if (Bot.dictionary.has(argsArr[0]))
-		{
-			adapter.send(Bot.dictionary.get(argsArr[0]).getValue());
-			return;
-		}
-
 		if (args.startsWith(SIZE))
 		{
 			int size = Bot.dictionary.getSize();
 			if (size == -1)
 				adapter.send(sender + ": I haven't a clue.");
 			else
-				adapter.send(sender + ": " + Bot.dictionary.getSize() + " entries");
+				adapter.send(sender + ": Dictionary contains " + Bot.dictionary.getSize()
+						+ " entries.");
 			return;
 		}
-		
-		if (argsArr.length < 2)
-		{
-			adapter.send("Not Found: " + argsArr[0]);
-			return;
-		}
-		
+
 		if (args.startsWith(INFO))
 		{
 			DictionaryItem item = Bot.dictionary.get(argsArr[1]);
@@ -84,38 +71,19 @@ public class DictCommand extends Command
 			return;
 		}
 
-		if (args.indexOf(REPLY_TAG) > 0)
+		if (Bot.dictionary.has(argsArr[0]))
 		{
-			int replyTagEndIndex = args.indexOf(REPLY_TAG) + REPLY_TAG.length();
-			add(argsArr[0], args.substring(replyTagEndIndex).trim(), sender, adapter);
+			adapter.send(Bot.dictionary.get(argsArr[0]).getValue());
 			return;
 		}
 
-		add(argsArr[0], args, sender, adapter);
-	}
-
-	private void add(String key, String value, String addedBy, Adapter adapter)
-	{
-		try
-		{
-			Bot.dictionary.add(key, value, addedBy);
-			adapter.send(key + " => " + value);
-		}
-		catch (IOException e)
-		{
-			adapter.send("My mind has gone blank.");
-			e.printStackTrace();
-		}
-		catch (ConfigurationException e)
-		{
-			adapter.send("My mind has gone blank.");
-			e.printStackTrace();
-		}
+		adapter.send("Not Found: " + argsArr[0]);
+		return;
 	}
 
 	@Override
 	public String getHelpText()
 	{
-		return "allows you to define something and retrieve it later";
+		return "allows you to manipulate the dictionary and gather information about it";
 	}
 }
